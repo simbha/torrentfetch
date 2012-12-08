@@ -21,7 +21,7 @@ contributers = [] #List of contributors
 def fetchTorrent( ):
     """Fetches the torrent with the given string by using the torrent sources.
        The torrent is downloaded if it has a specific number of seeders/positive rating."""
-    s = raw_input("\nEnter torrent name:\n> ")
+    s = raw_input("Enter torrent name:\n> ")
     string = addTorrent(s)
     with open("download_torrents.txt", "a") as myfile:
         myfile.write(string + "\n")
@@ -37,7 +37,7 @@ def fetchSeries( ):
 def downloads( ):
     """Lists the latest torrent downloads that the user has completed.  If no number is specified it
        defaults at 10."""
-    print "\nListing last 10 downloads:"
+    print "Listing last 10 downloads:"
     try:
         with open("download_torrents.txt", "r") as myfile:
             index = 0
@@ -68,24 +68,23 @@ if __name__ == "__main__":
     """Main execution of the script, simply provides information about the contributers, author and the current version.
        Provides some information about the program then executes the main function for branching.  Exits on end of the
        main program."""
-    parser = optparse.OptionParser("usage: %prog [ [-t torrent] [-s series] [-d] [-v] ]")
-    parser.add_option("-t", "--torrent", dest="torrent", help="enter the torrent name")
-    parser.add_option("-s", "--series", dest="series", help="enter the series name")
-    parser.add_option("-v", "--version", dest="version", default=False)
-    parser.add_option("-d", "--downloads", dest="downloads", default=False)
-    #if ( sys.argv == 1 ):
-    print "Torrent Feeder Script\nVersion: " + ver + "\nauthor: hkpeprah\nContributors: "
-    for person in range(0, len(contributers)): print contributors[person] + " "
-    print "This script acts as a tool for enabling the user to download torrents\nand stay connected to recurring torrents."
-    main()
-    """
+    parser = optparse.OptionParser("usage: %prog [ options ]")
+    parser.add_option("-t", "--torrent", dest="torrent", help="enter the torrent name to search for")
+    parser.add_option("-s", "--series", dest="series", help="enter the series name to add and fetch episodes")
+    parser.add_option("-v", "--version", dest="version", default=False, help="the program's version", action='store_true')
+    parser.add_option("-d", "--downloads", dest="downloads", default=False, help="recent ten downloads", action='store_true')
+    (options, args) = parser.parse_args()
+    if ( len(sys.argv) == 1 ):
+        print "Torrent Feeder Script\nVersion: " + ver + "\nauthor: hkpeprah\nContributors: "
+        for person in range(0, len(contributers)): print contributors[person] + " "
+        print "This script acts as a tool for enabling the user to download torrents\nand stay connected to recurring torrents.\n"
+        main()
     elif ( sys.argv > 1) :
-        (options, args) = parser.parse_args()
-        if ( options.version and not(options.downloads) and options.torrent == None and options.series == None ): print ver + "\n"
-        elif ( options.downloads and options.torrent == None and options.series == None ): downloads()
+        #Parse the command-line arguments
+        if ( options.version == True ): print "Version: " + str(ver)
+        elif ( options.downloads == True  ): downloads()
         elif ( not( options.torrent == None ) and options.series == None ): fetchTorrent( str(torrent) )
         elif ( not( options.series == None ) ): fetchSeries( str(series) )
         else: print parser.usage
-    """
     exit
    
