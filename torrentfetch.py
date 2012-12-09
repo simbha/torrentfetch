@@ -23,15 +23,16 @@ def fetchTorrent( ):
        The torrent is downloaded if it has a specific number of seeders/positive rating."""
     s = raw_input("Enter torrent name:\n> ")
     string = addTorrent(s)
-    with open("download_torrents.txt", "a") as myfile:
-        myfile.write(string + "\n")
+    if not( string == None ):
+        with open("download_torrents.txt", "a") as myfile:
+            myfile.write(string + "\n")
 
 
 def fetchSeries( ):
     """Adds the new series to the list, and fetches the individual torrents up-to-and
        including the one that the user specifies.  Torrent must have a specific number
        of seeders and a certain positive rating."""
-
+    print "0. Schedule a torrent (fetches the torrent when it finds it has been added)\n1. Schedule a series (recurring torrent download)"
 
 
 def downloads( ):
@@ -55,13 +56,21 @@ def main():
        what they wish to do.  Depending on the input, the program will switch to the appropriate branch and receive
        and or provide input."""
     while True:
-        print "Enter the corresponding number: \n0. Download new torrent.\n1. Enter new torrent series (RSS).\n2. List latest downloads.\n3. Exit"
+        print "Enter the corresponding number: \n0. Download new torrent.\n1. Schedule torrent or connect to series (RSS).\n2. List latest downloads.",
+        print "\n3. View current downloads.\n4. View scheduled torrents and series.\n5. Exit"
         branch = int(raw_input("> "))
-        if branch == 0: fetchTorrent()
-        elif branch == 1: print "Enter the torrent series to download."
+        if branch == 0:
+            while True:
+                fetchTorrent()
+                if (not( raw_input("Download another torrent, 'y' or 'n'?\n> ") == "y")): break
+        elif branch == 1: 
+            while True:
+                fetchSeries()
+                if (not( raw_input("Schedule another torrent, 'y' or 'n'?\n> ") == "y")): break
         elif branch == 2: downloads()
-        else: break;
-        print "\n"
+        elif branch == 3: print "Current downloads"
+        elif branch == 4: print "Scheduled torrents"
+        else: break
 
 
 if __name__ == "__main__":
@@ -73,6 +82,7 @@ if __name__ == "__main__":
     parser.add_option("-s", "--series", dest="series", help="enter the series name to add and fetch episodes")
     parser.add_option("-v", "--version", dest="version", default=False, help="the program's version", action='store_true')
     parser.add_option("-d", "--downloads", dest="downloads", default=False, help="recent ten downloads", action='store_true')
+    parser.add_option("-l", "--list", dest="list_series", default=False, help="list all the series that are added", action='store_true')
     (options, args) = parser.parse_args()
     if ( len(sys.argv) == 1 ):
         print "Torrent Feeder Script\nVersion: " + ver + "\nauthor: hkpeprah\nContributors: "
